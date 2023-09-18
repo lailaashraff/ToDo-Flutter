@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/my_theme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo/provider/app_config_provider.dart';
 
 class AddTaskWidget extends StatelessWidget {
   const AddTaskWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<AppConfigProvider>(context);
     return Slidable(
       // The start action pane is the one at the left or the top side.
       startActionPane: ActionPane(
         extentRatio: 0.25,
         // A motion is a widget used to control how the pane animates.
-        motion: const ScrollMotion(),
+        motion: const BehindMotion(),
 
         children: [
           // A SlidableAction can have an icon and/or a label.
@@ -25,7 +29,7 @@ class AddTaskWidget extends StatelessWidget {
             backgroundColor: MyTheme.redColor,
             foregroundColor: Colors.white,
             icon: Icons.delete,
-            label: 'Delete',
+            label: AppLocalizations.of(context)!.delete,
           ),
         ],
       ),
@@ -34,7 +38,8 @@ class AddTaskWidget extends StatelessWidget {
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
-            color: MyTheme.whiteColor,
+            color:
+            provider.isDarkMode() ? MyTheme.darkBlack : MyTheme.whiteColor,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,17 +56,20 @@ class AddTaskWidget extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'Task title',
-                        style: Theme.of(context)
+                        AppLocalizations.of(context)!.task_title,
+                        style: Theme
+                            .of(context)
                             .textTheme
-                            .titleSmall
-                            ?.copyWith(color: MyTheme.primaryLight),
+                            .displayMedium,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text('Task description',
-                          style: Theme.of(context).textTheme.titleSmall),
+                      child: Text(AppLocalizations.of(context)!.task_desc,
+                          style: Theme
+                              .of(context)
+                              .textTheme
+                              .titleSmall),
                     ),
                   ],
                 ),

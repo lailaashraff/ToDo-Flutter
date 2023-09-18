@@ -1,6 +1,8 @@
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/my_theme.dart';
+import 'package:todo/provider/app_config_provider.dart';
 
 import 'add_task_widget.dart';
 
@@ -9,6 +11,7 @@ class ToDoList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<AppConfigProvider>(context);
     return Column(
       children: [
         CalendarTimeline(
@@ -21,11 +24,15 @@ class ToDoList extends StatelessWidget {
           ),
           onDateSelected: (date) {},
           leftMargin: 20,
-          monthColor: MyTheme.blackColor,
+          monthColor: provider.isDarkMode()
+              ? MyTheme.blackColor
+              : Theme
+              .of(context)
+              .primaryColor,
           dayColor: MyTheme.blackColor,
-          activeDayColor: Colors.white,
-          activeBackgroundDayColor: Theme.of(context).primaryColor,
-          dotsColor: MyTheme.whiteColor,
+          activeDayColor: provider.isDarkMode() ? Colors.black : Colors.white,
+          activeBackgroundDayColor: MyTheme.primaryLight,
+          dotsColor: provider.isDarkMode() ? Colors.black : Colors.white,
           locale: 'en_ISO',
         ),
         Expanded(

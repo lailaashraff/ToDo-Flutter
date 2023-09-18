@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/provider/app_config_provider.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
   @override
@@ -12,6 +15,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<AppConfigProvider>(context);
     return Container(
       margin: EdgeInsets.all(10),
       child: Column(
@@ -19,8 +23,11 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Add new task',
-              style: Theme.of(context).textTheme.titleMedium,
+              AppLocalizations.of(context)!.add_new_task,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .titleMedium,
             ),
           ),
           Form(
@@ -34,11 +41,14 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                     child: TextFormField(
                       validator: (text) {
                         if (text == null || text.isEmpty) {
-                          return 'Please enter task title';
+                          return AppLocalizations.of(context)!.enter_task_title;
                         }
                       },
-                      decoration:
-                          InputDecoration(hintText: 'Enter your task title'),
+                      decoration: InputDecoration(
+                        hintText:
+                        AppLocalizations.of(context)!.enter_task_title,
+                        //hintStyle: Theme.of(context).textTheme.titleSmall
+                      ),
                     ),
                   ),
                   Padding(
@@ -46,19 +56,24 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                     child: TextFormField(
                       validator: (text) {
                         if (text == null || text.isEmpty) {
-                          return 'Please enter  task description';
+                          return AppLocalizations.of(context)!.enter_task_desc;
                         }
                       },
                       maxLines: 3,
-                      decoration:
-                          InputDecoration(hintText: 'Enter task description'),
+                      decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context)!.enter_task_desc,
+                        //hintStyle: Theme.of(context).textTheme.titleSmall
+                      ),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(12),
                     child: Text(
-                      'Select date',
-                      style: Theme.of(context).textTheme.titleMedium,
+                      AppLocalizations.of(context)!.select_date,
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .titleMedium,
                     ),
                   ),
                   InkWell(
@@ -76,8 +91,11 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                       addTask();
                     },
                     child: Text(
-                      'Add',
-                      style: Theme.of(context).textTheme.titleLarge,
+                      AppLocalizations.of(context)!.add,
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .titleLarge,
                     ),
                   )
                 ],
