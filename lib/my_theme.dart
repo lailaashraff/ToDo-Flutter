@@ -64,7 +64,7 @@ class MyTheme {
         iconSize: 35),
     scaffoldBackgroundColor: bgDark,
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        selectedItemColor: primaryLight, unselectedItemColor: Colors.grey),
+        selectedItemColor: primaryLight, unselectedItemColor: Colors.white),
     appBarTheme: AppBarTheme(
       backgroundColor: primaryLight,
     ),

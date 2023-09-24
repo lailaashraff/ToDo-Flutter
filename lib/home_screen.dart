@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/my_theme.dart';
 import 'package:todo/provider/app_config_provider.dart';
 import 'package:todo/settings/settings_tab.dart';
 import 'package:todo/todolist/to_do_list_tab.dart';
 import 'package:todo/todolist/todo_bottomsheet_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = 'home-screen';
@@ -16,13 +16,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
-  String title = '';
+  String title = 'fixed';
 
   @override
   Widget build(BuildContext context) {
-    if (title == '') {
-      initializeTitle();
-    }
+    // if (title == '') {
+    //   initializeTitle();
+    // }
     var provider = Provider.of<AppConfigProvider>(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -41,14 +41,14 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         toolbarHeight: 120,
         title: Text(
-          title,
-          style: Theme
-              .of(context)
-              .textTheme
-              .titleLarge,
+          selectedIndex == 0
+              ? AppLocalizations.of(context)!.app_title
+              : AppLocalizations.of(context)!.settings,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
       bottomNavigationBar: BottomAppBar(
+        color: provider.isDarkMode() ? MyTheme.darkBlack : MyTheme.whiteColor,
         shape: CircularNotchedRectangle(),
         notchMargin: 8,
         child: BottomNavigationBar(
@@ -57,7 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
           currentIndex: selectedIndex,
           onTap: (index) {
             selectedIndex = index;
-            onTapChangeAppBar(selectedIndex);
 
             setState(() {});
           },
@@ -90,22 +89,5 @@ class _HomeScreenState extends State<HomeScreen> {
 
   initializeTitle() {
     title = AppLocalizations.of(context)!.app_title;
-  }
-
-  onTapChangeAppBar(int index) {
-    selectedIndex = index;
-    switch (index) {
-      case 0:
-        {
-          title = AppLocalizations.of(context)!.app_title;
-        }
-        break;
-      case 1:
-        {
-          title = AppLocalizations.of(context)!.settings;
-        }
-        break;
-    }
-    setState(() {});
   }
 }

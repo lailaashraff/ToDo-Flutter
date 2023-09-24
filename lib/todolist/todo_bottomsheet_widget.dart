@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:todo/firebase_utils.dart';
+import 'package:todo/models/task.dart';
 import 'package:todo/provider/app_config_provider.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
@@ -10,7 +11,9 @@ class AddTaskBottomSheet extends StatefulWidget {
 }
 
 class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
-  String selectedDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+  DateTime selectedDate = DateTime.now();
+  String title = '';
+  String description = '';
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -24,10 +27,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               AppLocalizations.of(context)!.add_new_task,
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .titleMedium,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
           Form(
@@ -39,6 +39,9 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   Padding(
                     padding: const EdgeInsets.all(12),
                     child: TextFormField(
+                      onChanged: (text) {
+                        title = text;
+                      },
                       validator: (text) {
                         if (text == null || text.isEmpty) {
                           return AppLocalizations.of(context)!.enter_task_title;
@@ -46,7 +49,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                       },
                       decoration: InputDecoration(
                         hintText:
-                        AppLocalizations.of(context)!.enter_task_title,
+                            AppLocalizations.of(context)!.enter_task_title,
                         //hintStyle: Theme.of(context).textTheme.titleSmall
                       ),
                     ),
@@ -54,6 +57,9 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   Padding(
                     padding: const EdgeInsets.all(12),
                     child: TextFormField(
+                      onChanged: (text) {
+                        description = text;
+                      },
                       validator: (text) {
                         if (text == null || text.isEmpty) {
                           return AppLocalizations.of(context)!.enter_task_desc;
@@ -70,10 +76,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                     padding: const EdgeInsets.all(12),
                     child: Text(
                       AppLocalizations.of(context)!.select_date,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .titleMedium,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
                   InkWell(
@@ -81,7 +84,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                       selectTaskDate();
                     },
                     child: Text(
-                      selectedDate,
+                      '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
@@ -92,10 +95,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                     },
                     child: Text(
                       AppLocalizations.of(context)!.add,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .titleLarge,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   )
                 ],
@@ -118,12 +118,20 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
     );
 
     if (chosenDate != null) {
-      selectedDate = DateFormat('dd/MM/yyyy').format(chosenDate);
+      selectedDate = chosenDate;
     }
     setState(() {});
   }
 
   addTask() {
-    if (_formKey.currentState?.validate() == true) {}
+    if (_formKey.currentState?.validate() == true) {
+      Task task =
+          Task(title: title, description: description, dateTime: selectedDate);
+      FirebaseUtils.addTaskToFirestore(task)
+          .timeout(Duration(milliseconds: 500), onTimeout: () {
+        print('To do added successfully');
+        Navigator.pop(context);
+      });
+    }
   }
 }
