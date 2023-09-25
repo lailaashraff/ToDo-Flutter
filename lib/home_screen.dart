@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/my_theme.dart';
-import 'package:todo/provider/app_config_provider.dart';
+import 'package:todo/providers/app_config_provider.dart';
 import 'package:todo/settings/settings_tab.dart';
 import 'package:todo/todolist/to_do_list_tab.dart';
 import 'package:todo/todolist/todo_bottomsheet_widget.dart';

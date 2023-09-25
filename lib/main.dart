@@ -5,7 +5,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/home_screen.dart';
 import 'package:todo/my_theme.dart';
-import 'package:todo/provider/app_config_provider.dart';
+import 'package:todo/providers/app_config_provider.dart';
+import 'package:todo/providers/list_provider.dart';
 
 import 'firebase_options.dart';
 
@@ -18,8 +19,15 @@ Future<void> main() async {
   await FirebaseFirestore.instance.disableNetwork();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => AppConfigProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AppConfigProvider>(
+          create: (_) => AppConfigProvider(),
+        ),
+        ChangeNotifierProvider<ListProvider>(
+          create: (_) => ListProvider(),
+        ),
+      ],
       child: MyApp(),
     ),
   );

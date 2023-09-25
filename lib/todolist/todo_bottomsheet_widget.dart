@@ -3,7 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/firebase_utils.dart';
 import 'package:todo/models/task.dart';
-import 'package:todo/provider/app_config_provider.dart';
+import 'package:todo/providers/app_config_provider.dart';
+import 'package:todo/providers/list_provider.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
   @override
@@ -15,10 +16,12 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   String title = '';
   String description = '';
   final _formKey = GlobalKey<FormState>();
+  late ListProvider listProvider;
 
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
+    listProvider = Provider.of<ListProvider>(context);
     return Container(
       margin: EdgeInsets.all(10),
       child: Column(
@@ -130,6 +133,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
       FirebaseUtils.addTaskToFirestore(task)
           .timeout(Duration(milliseconds: 500), onTimeout: () {
         print('To do added successfully');
+        listProvider.getTasksFromFireStore();
         Navigator.pop(context);
       });
     }

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/my_theme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../provider/app_config_provider.dart';
+import '../../providers/app_config_provider.dart';
 import 'LanguageBottomSheet.dart';
 import 'ThemeBottomSheet.dart';
 
@@ -25,10 +24,7 @@ class _SettingsTabState extends State<SettingsTab> {
         children: [
           Text(
             AppLocalizations.of(context)!.language,
-            style: Theme
-                .of(context)
-                .textTheme
-                .titleMedium,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           SizedBox(
             height: 15,
@@ -50,8 +46,7 @@ class _SettingsTabState extends State<SettingsTab> {
                       provider.appLanguage == 'en'
                           ? AppLocalizations.of(context)!.english
                           : AppLocalizations.of(context)!.arabic,
-                      style: Theme
-                          .of(context)
+                      style: Theme.of(context)
                           .textTheme
                           .titleSmall!
                           .copyWith(color: MyTheme.primaryLight)),
@@ -68,10 +63,7 @@ class _SettingsTabState extends State<SettingsTab> {
           ),
           Text(
             AppLocalizations.of(context)!.theming,
-            style: Theme
-                .of(context)
-                .textTheme
-                .titleMedium,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           SizedBox(
             height: 15,
@@ -93,8 +85,7 @@ class _SettingsTabState extends State<SettingsTab> {
                       provider.isDarkMode()
                           ? AppLocalizations.of(context)!.darkMode
                           : AppLocalizations.of(context)!.lightMode,
-                      style: Theme
-                          .of(context)
+                      style: Theme.of(context)
                           .textTheme
                           .titleSmall!
                           .copyWith(color: MyTheme.primaryLight)),

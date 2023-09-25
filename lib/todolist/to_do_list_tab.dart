@@ -2,16 +2,25 @@ import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/my_theme.dart';
-import 'package:todo/provider/app_config_provider.dart';
+import 'package:todo/providers/app_config_provider.dart';
+import 'package:todo/providers/list_provider.dart';
 
 import 'add_task_widget.dart';
 
-class ToDoList extends StatelessWidget {
-  const ToDoList({Key? key}) : super(key: key);
+class ToDoList extends StatefulWidget {
+  @override
+  State<ToDoList> createState() => _ToDoListState();
+}
 
+class _ToDoListState extends State<ToDoList> {
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
+    var listProvider = Provider.of<ListProvider>(context);
+
+    if (listProvider.taskList.isEmpty) {
+      listProvider.getTasksFromFireStore();
+    }
     return Column(
       children: [
         CalendarTimeline(
@@ -26,9 +35,7 @@ class ToDoList extends StatelessWidget {
           leftMargin: 20,
           monthColor: provider.isDarkMode()
               ? MyTheme.blackColor
-              : Theme
-              .of(context)
-              .primaryColor,
+              : Theme.of(context).primaryColor,
           dayColor: MyTheme.blackColor,
           activeDayColor: provider.isDarkMode() ? Colors.black : Colors.white,
           activeBackgroundDayColor: MyTheme.primaryLight,
@@ -38,9 +45,11 @@ class ToDoList extends StatelessWidget {
         Expanded(
           child: ListView.builder(
             itemBuilder: (context, index) {
-              return AddTaskWidget();
+              return AddTaskWidget(
+                task: listProvider.taskList[index],
+              );
             },
-            itemCount: 20,
+            itemCount: listProvider.taskList.length,
           ),
         )
       ],

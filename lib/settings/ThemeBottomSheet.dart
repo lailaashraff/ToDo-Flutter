@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 import '../../my_theme.dart';
-import '../provider/app_config_provider.dart';
+import '../providers/app_config_provider.dart';
 
 class ThemeBottomSheet extends StatefulWidget {
   @override
@@ -46,8 +46,7 @@ class _ThemeBottomSheetState extends State<ThemeBottomSheet> {
         children: [
           Text(
             text,
-            style: Theme
-                .of(context)
+            style: Theme.of(context)
                 .textTheme
                 .titleMedium!
                 .copyWith(color: MyTheme.primaryLight),
@@ -67,10 +66,7 @@ class _ThemeBottomSheetState extends State<ThemeBottomSheet> {
       padding: const EdgeInsets.all(12),
       child: Text(
         text,
-        style: Theme
-            .of(context)
-            .textTheme
-            .titleMedium,
+        style: Theme.of(context).textTheme.titleMedium,
       ),
     );
   }
