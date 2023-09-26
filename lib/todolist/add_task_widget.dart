@@ -9,10 +9,17 @@ import 'package:todo/providers/list_provider.dart';
 
 import '../models/task.dart';
 
-class AddTaskWidget extends StatelessWidget {
+class AddTaskWidget extends StatefulWidget {
   Task task;
 
   AddTaskWidget({required this.task});
+
+  @override
+  State<AddTaskWidget> createState() => _AddTaskWidgetState();
+}
+
+class _AddTaskWidgetState extends State<AddTaskWidget> {
+  //bool isDone = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +43,7 @@ class AddTaskWidget extends StatelessWidget {
                 bottomLeft: Radius.circular(20),
               ),
               onPressed: (context) {
-                FirebaseUtils.deleteTask(task)
+                FirebaseUtils.deleteTask(widget.task)
                     .timeout(Duration(milliseconds: 500), onTimeout: () {
                   print('todo deleted successfully');
                   listProvider.getTasksFromFireStore();
@@ -50,7 +57,7 @@ class AddTaskWidget extends StatelessWidget {
           ],
         ),
         child: Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.all(18),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(18),
               color: provider.isDarkMode()
@@ -63,7 +70,9 @@ class AddTaskWidget extends StatelessWidget {
                 Container(
                   height: MediaQuery.of(context).size.height * 0.1,
                   width: MediaQuery.of(context).size.width * 0.01,
-                  color: MyTheme.primaryLight,
+                  color: widget.task.isDone!
+                      ? MyTheme.greenColor
+                      : MyTheme.primaryLight,
                 ),
                 Expanded(
                   child: Column(
@@ -72,35 +81,70 @@ class AddTaskWidget extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          task.title ?? '',
-                          style: Theme.of(context).textTheme.displayMedium,
+                          widget.task.title ?? '',
+                          style: widget.task.isDone!
+                              ? Theme.of(context)
+                                  .textTheme
+                                  .displayMedium
+                                  ?.copyWith(color: MyTheme.greenColor)
+                              : Theme.of(context).textTheme.displayMedium,
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(task.description ?? '',
-                            style: Theme.of(context).textTheme.titleSmall),
+                        child: Text(widget.task.description ?? '',
+                            style: widget.task.isDone!
+                                ? Theme.of(context)
+                                    .textTheme
+                                    .titleSmall
+                                    ?.copyWith(color: MyTheme.greenColor)
+                                : Theme.of(context).textTheme.titleSmall),
                       ),
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.05,
-                    vertical: MediaQuery.of(context).size.height * 0.009,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: MyTheme.primaryLight,
-                  ),
-                  child: Icon(
-                    Icons.check_rounded,
-                    color: MyTheme.whiteColor,
-                  ),
-                )
+                InkWell(
+                    onTap: () {
+                      onTapCompleteTask(widget.task)
+                          .timeout(Duration(milliseconds: 500), onTimeout: () {
+                        print('task completed !');
+                        listProvider.getTasksFromFireStore();
+                      });
+                    },
+                    child: widget.task.isDone!
+                        ? Text(
+                            AppLocalizations.of(context)!.done,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(color: MyTheme.greenColor),
+                          )
+                        : Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.05,
+                              vertical:
+                                  MediaQuery.of(context).size.height * 0.009,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: MyTheme.primaryLight,
+                            ),
+                            child: Icon(
+                              Icons.check_rounded,
+                              color: MyTheme.whiteColor,
+                            ),
+                            // ),
+                          ))
               ],
             )),
       ),
     );
+  }
+
+  Future<void> onTapCompleteTask(Task task) {
+    return FirebaseUtils.getTaskCollection()
+        .doc(task.id)
+        .update({'isDone': true});
   }
 }

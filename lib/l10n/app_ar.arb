@@ -14,5 +14,6 @@
   "arabic": "العربية",
   "theming": "النمط",
   "lightMode": "وضع الإضاءة",
-  "darkMode": "وضع الليل"
+  "darkMode": "وضع الليل",
+  "done": "تم!"
 }
