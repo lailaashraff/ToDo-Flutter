@@ -16,10 +16,6 @@ class EditTask extends StatefulWidget {
 }
 
 class _EditTaskState extends State<EditTask> {
-  DateTime selectedDate = DateTime.now();
-
-  // String title = '';
-  // String description = '';
   final _formKey = GlobalKey<FormState>();
   late Task args;
   late ListProvider listProvider;
@@ -165,7 +161,7 @@ class _EditTaskState extends State<EditTask> {
     );
 
     if (chosenDate != null) {
-      selectedDate = chosenDate;
+      args.dateTime = chosenDate;
     }
     setState(() {});
   }
@@ -175,7 +171,7 @@ class _EditTaskState extends State<EditTask> {
       task = Task(
           title: _titlecontroller.text,
           description: _desccontroller.text,
-          dateTime: selectedDate,
+          dateTime: args.dateTime,
           id: args.id);
       FirebaseUtils.updateTaskInFirestore(task)
           .timeout(Duration(milliseconds: 500), onTimeout: () {

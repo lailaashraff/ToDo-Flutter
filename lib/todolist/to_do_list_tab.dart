@@ -23,14 +23,16 @@ class _ToDoListState extends State<ToDoList> {
     return Column(
       children: [
         CalendarTimeline(
-          initialDate: DateTime.now(),
+          initialDate: listProvider.selectedDate,
           firstDate: DateTime.now().subtract(
             Duration(days: 365),
           ),
           lastDate: DateTime.now().add(
             Duration(days: 365),
           ),
-          onDateSelected: (date) {},
+          onDateSelected: (date) {
+            listProvider.changeSelectDate(date);
+          },
           leftMargin: 20,
           monthColor: provider.isDarkMode()
               ? MyTheme.blackColor
