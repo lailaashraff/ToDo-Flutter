@@ -48,11 +48,6 @@ class FirebaseUtils {
     }
   }
 
-  // Future<void> updateTask(Task task) {
-  //   return FirebaseUtils.getTaskCollection()
-  //       .doc(task.id)
-  //       .update();
-  // }
   static Future<void> deleteTask(Task task) {
     return getTaskCollection().doc(task.id).delete();
   }

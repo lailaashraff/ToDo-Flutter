@@ -4,8 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:todo/my_theme.dart';
 import 'package:todo/providers/app_config_provider.dart';
 import 'package:todo/providers/list_provider.dart';
-
-import 'add_task_widget.dart';
+import 'package:todo/todolist/task_widget.dart';
 
 class ToDoList extends StatefulWidget {
   @override
@@ -45,7 +44,7 @@ class _ToDoListState extends State<ToDoList> {
         Expanded(
           child: ListView.builder(
             itemBuilder: (context, index) {
-              return AddTaskWidget(
+              return TaskWidget(
                 task: listProvider.taskList[index],
               );
             },

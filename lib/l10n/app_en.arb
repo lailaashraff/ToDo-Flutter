@@ -15,5 +15,7 @@
   "theming": "Theming",
   "lightMode": "Light Mode",
   "darkMode": "Dark Mode",
-  "done": "Done !"
+  "done": "Done !",
+  "editTask": "Edit Task",
+  "saveChanges": "Save Changes"
 }

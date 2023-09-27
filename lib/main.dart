@@ -7,6 +7,7 @@ import 'package:todo/home_screen.dart';
 import 'package:todo/my_theme.dart';
 import 'package:todo/providers/app_config_provider.dart';
 import 'package:todo/providers/list_provider.dart';
+import 'package:todo/todolist/edit_task_widget.dart';
 
 import 'firebase_options.dart';
 
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
       themeMode: provider.appTheme,
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
+        EditTask.routeName: (context) => EditTask()
       },
     );
   }

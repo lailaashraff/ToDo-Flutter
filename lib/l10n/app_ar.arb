@@ -15,5 +15,7 @@
   "theming": "النمط",
   "lightMode": "وضع الإضاءة",
   "darkMode": "وضع الليل",
-  "done": "تم!"
+  "done": "تم!",
+  "editTask": "تعديل المهمة",
+  "saveChanges": "حغظ التغيير"
 }

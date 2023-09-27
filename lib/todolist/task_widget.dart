@@ -59,6 +59,7 @@ class _TaskWidgetState extends State<TaskWidget> {
         ),
         child: InkWell(
           onTap: () {
+            print('tappeddd');
             Navigator.pushNamed(context, EditTask.routeName,
                 arguments: widget.task);
           },
@@ -150,14 +151,3 @@ class _TaskWidgetState extends State<TaskWidget> {
         .update({'isDone': true});
   }
 }
-
-// class taskInfo {
-//   String title;
-//   String description;
-//   String selectedDate;
-//
-//   taskInfo(
-//       {required this.title,
-//       required this.description,
-//       required this.selectedDate});
-// }
