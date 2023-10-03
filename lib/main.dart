@@ -9,6 +9,8 @@ import 'package:todo/providers/app_config_provider.dart';
 import 'package:todo/providers/list_provider.dart';
 import 'package:todo/todolist/edit_task_widget.dart';
 
+import 'auth/login/login_screen.dart';
+import 'auth/register/register_screen.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -49,11 +51,13 @@ class MyApp extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       theme: MyTheme.lightTheme,
       darkTheme: MyTheme.darkTheme,
-      initialRoute: HomeScreen.routeName,
+      initialRoute: LoginScreen.routeName,
       themeMode: provider.appTheme,
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
-        EditTask.routeName: (context) => EditTask()
+        EditTask.routeName: (context) => EditTask(),
+        RegisterScreen.routeName: (context) => RegisterScreen(),
+        LoginScreen.routeName: (context) => LoginScreen()
       },
     );
   }
