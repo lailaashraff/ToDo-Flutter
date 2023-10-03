@@ -1,13 +1,25 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo/auth/register/register_screen.dart';
 import 'package:todo/components/custom_textformfield.dart';
 
-class LoginScreen extends StatelessWidget {
+import '../../dialog_utils.dart';
+import '../../home_screen.dart';
+
+class LoginScreen extends StatefulWidget {
   static const String routeName = 'login';
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController emailController =
+      TextEditingController(text: 'jj@yahoo.com');
+
+  TextEditingController passwordController =
+      TextEditingController(text: '123456');
+
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
@@ -95,7 +107,59 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  void login() {
-    if (formKey.currentState!.validate() == true) {}
+  void login() async {
+    if (formKey.currentState!.validate() == true) {
+      DialogUtils.showLoading(context, 'Loading...');
+
+      try {
+        final credential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+                email: emailController.text, password: passwordController.text);
+        //todo:hide loading
+        DialogUtils.hideLoading(context);
+
+        //todo:show message
+        DialogUtils.showMessage(context, 'Login Successfully',
+            title: 'Success', posActionName: 'Ok', posAction: () {
+          Navigator.pushNamed(context, HomeScreen.routeName);
+        });
+
+        print('login successfully');
+        print(credential.user?.uid ?? '');
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          DialogUtils.hideLoading(context);
+          DialogUtils.showMessage(
+            context,
+            'No user found for that email.',
+            title: 'Error',
+            posActionName: 'Ok',
+          );
+
+          print('error firebaseAuth user: ${e.toString()}');
+          print('No user found for that email.');
+        } else if (e.code == 'wrong-password') {
+          DialogUtils.hideLoading(context);
+          DialogUtils.showMessage(
+            context,
+            'Wrong password provided for that user.',
+            title: 'Error',
+            posActionName: 'Ok',
+          );
+          print('error firebaseAuth pass: ${e.toString()}');
+          print('Wrong password provided for that user.');
+        }
+      } catch (e) {
+        DialogUtils.hideLoading(context);
+        DialogUtils.showMessage(
+          context,
+          '${e.toString()}',
+          title: 'Error',
+          posActionName: 'Ok',
+        );
+        print('in second catch');
+        print(e.toString());
+      }
+    }
   }
 }

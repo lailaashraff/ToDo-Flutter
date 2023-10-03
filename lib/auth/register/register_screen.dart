@@ -1,13 +1,29 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo/auth/login/login_screen.dart';
 import 'package:todo/components/custom_textformfield.dart';
+import 'package:todo/dialog_utils.dart';
+import 'package:todo/home_screen.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   static const String routeName = 'register';
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  TextEditingController nameController = TextEditingController(text: 'laila');
+
+  TextEditingController emailController =
+      TextEditingController(text: 'jj@yahoo.com');
+
+  TextEditingController passwordController =
+      TextEditingController(text: '123456');
+
+  TextEditingController confirmPasswordController =
+      TextEditingController(text: '123456');
+
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
@@ -107,7 +123,63 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 
-  void register() {
-    if (formKey.currentState!.validate() == true) {}
+  void register() async {
+    if (formKey.currentState!.validate() == true) {
+      //todo:show loading
+      DialogUtils.showLoading(context, 'Loading...');
+
+      try {
+        final credential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+        //todo:hide loading
+        DialogUtils.hideLoading(context);
+
+        //todo:show message
+        DialogUtils.showMessage(context, 'Registered Successfully',
+            title: 'Success', posActionName: 'Ok', posAction: () {
+          Navigator.pushNamed(context, HomeScreen.routeName);
+        });
+
+        print('registered successfuly');
+        print(credential.user?.uid ?? '');
+      } on FirebaseAuthException catch (e) {
+        //todo:hide loading
+        //todo:show message
+        if (e.code == 'weak-password') {
+          DialogUtils.hideLoading(context);
+          DialogUtils.showMessage(
+            context,
+            'The password provided is too weak',
+            title: 'Error',
+            posActionName: 'Ok',
+          );
+
+          print('The password provided is too weak.');
+        } else if (e.code == 'email-already-in-use') {
+          DialogUtils.hideLoading(context);
+          DialogUtils.showMessage(
+            context,
+            'The account already exists for that email.',
+            title: 'Error',
+            posActionName: 'Ok',
+          );
+          print('The account already exists for that email.');
+        }
+      } catch (e) {
+        //todo:hide loading
+        //todo:show message
+        DialogUtils.hideLoading(context);
+        DialogUtils.showMessage(
+          context,
+          '${e.toString()}',
+          title: 'Error',
+          posActionName: 'Ok',
+        );
+        print(e.toString());
+      }
+    }
   }
 }
