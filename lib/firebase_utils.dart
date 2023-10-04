@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:todo/models/my_user.dart';
 import 'package:todo/models/task.dart';
 
 class FirebaseUtils {
@@ -18,16 +19,6 @@ class FirebaseUtils {
     return docRef.set(task);
   }
 
-  // static Future<void> updateTaskToFirestore(Task task) {
-  //   var taskCollection = getTaskCollection();
-  //   var docRef = taskCollection.doc();
-  //   task.id = docRef.id;
-  //   return docRef.update({
-  //     'title': task.title,
-  //     'description': task.description,
-  //     'dateTime': task.dateTime?.millisecondsSinceEpoch,
-  //   });
-  // }
   static Future<void> updateTaskInFirestore(Task task) async {
     try {
       // Get the Firestore document reference for the task using its ID
@@ -50,5 +41,23 @@ class FirebaseUtils {
 
   static Future<void> deleteTask(Task task) {
     return getTaskCollection().doc(task.id).delete();
+  }
+
+  static CollectionReference<MyUser> getUserCollection() {
+    return FirebaseFirestore.instance
+        .collection(MyUser.collectionName)
+        .withConverter<MyUser>(
+            fromFirestore: (snapshot, options) =>
+                MyUser.fromFirestore(snapshot.data()),
+            toFirestore: (user, options) => user.toFirestore());
+  }
+
+  static Future<void> addUserToFirestore(MyUser user) {
+    return getUserCollection().doc(user.id).set(user);
+  }
+
+  static Future<MyUser?> readUserData(String uid) async {
+    var querySnapshot = await getUserCollection().doc(uid).get();
+    return querySnapshot.data();
   }
 }

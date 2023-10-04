@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:todo/auth/login/login_screen.dart';
 import 'package:todo/components/custom_textformfield.dart';
 import 'package:todo/dialog_utils.dart';
+import 'package:todo/firebase_utils.dart';
 import 'package:todo/home_screen.dart';
+import 'package:todo/models/my_user.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const String routeName = 'register';
@@ -134,6 +136,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
           email: emailController.text,
           password: passwordController.text,
         );
+        MyUser myUser = MyUser(
+            email: emailController.text,
+            id: credential.user?.uid,
+            name: nameController.text);
+        await FirebaseUtils.addUserToFirestore(myUser);
         //todo:hide loading
         DialogUtils.hideLoading(context);
 
