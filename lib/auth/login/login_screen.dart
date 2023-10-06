@@ -17,11 +17,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController =
-      TextEditingController(text: 'jj@yahoo.com');
+  TextEditingController emailController = TextEditingController();
 
-  TextEditingController passwordController =
-      TextEditingController(text: '123456');
+  TextEditingController passwordController = TextEditingController();
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -95,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextButton(
                       onPressed: () {
                         Navigator.of(context)
-                            .pushNamed(RegisterScreen.routeName);
+                            .pushReplacementNamed(RegisterScreen.routeName);
                       },
                       child: Text('Sign Up',
                           style: Theme.of(context).textTheme.displayMedium),
@@ -131,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
         //todo:show message
         DialogUtils.showMessage(context, 'Login Successfully',
             title: 'Success', posActionName: 'Ok', posAction: () {
-          Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+              Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
         });
 
         print('login successfully');

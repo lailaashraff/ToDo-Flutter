@@ -49,11 +49,13 @@ class _TaskWidgetState extends State<TaskWidget> {
               onPressed: (context) {
                 FirebaseUtils.deleteTask(
                         widget.task, authProvider.currentUser!.id!)
-                    .timeout(Duration(milliseconds: 500), onTimeout: () {
-                  print('todo deleted successfully');
+                    .then((value) {
                   listProvider
                       .getTasksFromFireStore(authProvider.currentUser!.id!);
+                }).timeout(Duration(milliseconds: 500), onTimeout: () {
+                  print('todo deleted successfully');
                 });
+                setState(() {});
               },
               backgroundColor: MyTheme.redColor,
               foregroundColor: Colors.white,

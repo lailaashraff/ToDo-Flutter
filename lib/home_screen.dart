@@ -55,7 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 listProvider.taskList = [];
                 authProvider.currentUser = null;
-                Navigator.of(context).pushNamed(LoginScreen.routeName);
+                Navigator.of(context)
+                    .pushReplacementNamed(LoginScreen.routeName);
               },
               icon: Icon(Icons.login_outlined))
         ],

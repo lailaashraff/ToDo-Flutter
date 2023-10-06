@@ -17,16 +17,13 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  TextEditingController nameController = TextEditingController(text: 'laila');
+  TextEditingController nameController = TextEditingController();
 
-  TextEditingController emailController =
-      TextEditingController(text: 'jj@yahoo.com');
+  TextEditingController emailController = TextEditingController();
 
-  TextEditingController passwordController =
-      TextEditingController(text: '123456');
+  TextEditingController passwordController = TextEditingController();
 
-  TextEditingController confirmPasswordController =
-      TextEditingController(text: '123456');
+  TextEditingController confirmPasswordController = TextEditingController();
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -115,7 +112,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, LoginScreen.routeName);
+                    Navigator.pushReplacementNamed(
+                        context, LoginScreen.routeName);
                   },
                   child: Text('Already have an account? Login.'),
                 )
@@ -151,10 +149,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         //todo:show message
         DialogUtils.showMessage(context, 'Registered Successfully',
             title: 'Success', posActionName: 'Ok', posAction: () {
-          Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+          Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
         });
 
-        print('registered successfuly');
+        print('registered successfully');
         print(credential.user?.uid ?? '');
       } on FirebaseAuthException catch (e) {
         //todo:hide loading
