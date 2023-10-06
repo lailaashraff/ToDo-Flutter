@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo/my_theme.dart';
 
 class DialogUtils {
   static void showLoading(BuildContext context, String message) {
@@ -14,6 +15,10 @@ class DialogUtils {
                 Text(message),
               ],
             ),
+            contentTextStyle: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(color: MyTheme.blackColor),
           );
         });
   }
@@ -64,6 +69,10 @@ class DialogUtils {
           return AlertDialog(
             content: Text(message),
             title: Text(title),
+            contentTextStyle: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(color: MyTheme.blackColor),
             titleTextStyle: Theme.of(context)
                 .textTheme
                 .titleSmall

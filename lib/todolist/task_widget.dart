@@ -9,6 +9,7 @@ import 'package:todo/providers/list_provider.dart';
 import 'package:todo/todolist/edit_task_widget.dart';
 
 import '../models/task.dart';
+import '../providers/auth_provider.dart';
 
 class TaskWidget extends StatefulWidget {
   Task task;
@@ -21,11 +22,13 @@ class TaskWidget extends StatefulWidget {
 
 class _TaskWidgetState extends State<TaskWidget> {
   //bool isDone = false;
+  late AuthProvider authProvider;
 
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
     var listProvider = Provider.of<ListProvider>(context);
+    authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     return Container(
       margin: EdgeInsets.all(12),
@@ -44,10 +47,12 @@ class _TaskWidgetState extends State<TaskWidget> {
                 bottomLeft: Radius.circular(20),
               ),
               onPressed: (context) {
-                FirebaseUtils.deleteTask(widget.task)
+                FirebaseUtils.deleteTask(
+                        widget.task, authProvider.currentUser!.id!)
                     .timeout(Duration(milliseconds: 500), onTimeout: () {
                   print('todo deleted successfully');
-                  listProvider.getTasksFromFireStore();
+                  listProvider
+                      .getTasksFromFireStore(authProvider.currentUser!.id!);
                 });
               },
               backgroundColor: MyTheme.redColor,
@@ -91,9 +96,9 @@ class _TaskWidgetState extends State<TaskWidget> {
                             widget.task.title ?? '',
                             style: widget.task.isDone!
                                 ? Theme.of(context)
-                                    .textTheme
-                                    .displayMedium
-                                    ?.copyWith(color: MyTheme.greenColor)
+                                .textTheme
+                                .displayMedium
+                                ?.copyWith(color: MyTheme.greenColor)
                                 : Theme.of(context).textTheme.displayMedium,
                           ),
                         ),
@@ -107,37 +112,41 @@ class _TaskWidgetState extends State<TaskWidget> {
                   ),
                   InkWell(
                       onTap: () {
-                        onTapCompleteTask(widget.task).timeout(
-                            Duration(milliseconds: 500), onTimeout: () {
+                        onTapCompleteTask(widget.task).then((value) {
+                          listProvider.getTasksFromFireStore(
+                              authProvider.currentUser!.id!);
+                        }).timeout(Duration(milliseconds: 500), onTimeout: () {
                           print('task completed !');
-                          listProvider.getTasksFromFireStore();
+                          listProvider.getTasksFromFireStore(
+                              authProvider.currentUser!.id!);
                         });
+                        setState(() {});
                       },
                       child: widget.task.isDone!
                           ? Text(
-                              AppLocalizations.of(context)!.done,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(color: MyTheme.greenColor),
-                            )
+                        AppLocalizations.of(context)!.done,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(color: MyTheme.greenColor),
+                      )
                           : Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.05,
-                                vertical:
-                                    MediaQuery.of(context).size.height * 0.009,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: MyTheme.primaryLight,
-                              ),
-                              child: Icon(
-                                Icons.check_rounded,
-                                color: MyTheme.whiteColor,
-                              ),
-                              // ),
-                            ))
+                        padding: EdgeInsets.symmetric(
+                          horizontal:
+                          MediaQuery.of(context).size.width * 0.05,
+                          vertical:
+                          MediaQuery.of(context).size.height * 0.009,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: MyTheme.primaryLight,
+                        ),
+                        child: Icon(
+                          Icons.check_rounded,
+                          color: MyTheme.whiteColor,
+                        ),
+                        // ),
+                      ))
                 ],
               )),
         ),
@@ -146,7 +155,7 @@ class _TaskWidgetState extends State<TaskWidget> {
   }
 
   Future<void> onTapCompleteTask(Task task) {
-    return FirebaseUtils.getTaskCollection()
+    return FirebaseUtils.getTaskCollection(authProvider.currentUser!.id!)
         .doc(task.id)
         .update({'isDone': true});
   }

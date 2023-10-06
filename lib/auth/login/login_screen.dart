@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/auth/register/register_screen.dart';
 import 'package:todo/components/custom_textformfield.dart';
 import 'package:todo/firebase_utils.dart';
 
 import '../../dialog_utils.dart';
 import '../../home_screen.dart';
+import '../../providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = 'login';
@@ -117,17 +119,19 @@ class _LoginScreenState extends State<LoginScreen> {
             .signInWithEmailAndPassword(
                 email: emailController.text, password: passwordController.text);
         //todo:hide loading
-        var user = FirebaseUtils.readUserData(credential.user?.uid ?? '');
+        var user = await FirebaseUtils.readUserData(credential.user?.uid ?? '');
         //user authenticated but not found in firebase
         if (user == null) {
           return;
         }
+        var authProvider = Provider.of<AuthProvider>(context, listen: false);
+        authProvider.updateUser(user);
         DialogUtils.hideLoading(context);
 
         //todo:show message
         DialogUtils.showMessage(context, 'Login Successfully',
             title: 'Success', posActionName: 'Ok', posAction: () {
-          Navigator.pushNamed(context, HomeScreen.routeName);
+          Navigator.pushReplacementNamed(context, HomeScreen.routeName);
         });
 
         print('login successfully');

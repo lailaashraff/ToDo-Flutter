@@ -3,8 +3,9 @@ import 'package:todo/models/my_user.dart';
 import 'package:todo/models/task.dart';
 
 class FirebaseUtils {
-  static CollectionReference<Task> getTaskCollection() {
-    return FirebaseFirestore.instance
+  static CollectionReference<Task> getTaskCollection(String uid) {
+    return getUserCollection()
+        .doc(uid)
         .collection(Task.collectionName)
         .withConverter<Task>(
             fromFirestore: (snapshot, options) =>
@@ -12,18 +13,18 @@ class FirebaseUtils {
             toFirestore: (task, options) => task.toFirestore());
   }
 
-  static Future<void> addTaskToFirestore(Task task) {
-    var taskCollection = getTaskCollection();
+  static Future<void> addTaskToFirestore(Task task, String uid) {
+    var taskCollection = getTaskCollection(uid);
     var docRef = taskCollection.doc();
     task.id = docRef.id;
     return docRef.set(task);
   }
 
-  static Future<void> updateTaskInFirestore(Task task) async {
+  static Future<void> updateTaskInFirestore(Task task, String uid) async {
     try {
       // Get the Firestore document reference for the task using its ID
       DocumentReference<Task> taskRef =
-          FirebaseUtils.getTaskCollection().doc(task.id);
+          FirebaseUtils.getTaskCollection(uid).doc(task.id);
 
       // Update the task details in Firestore
       await taskRef.update({
@@ -39,8 +40,8 @@ class FirebaseUtils {
     }
   }
 
-  static Future<void> deleteTask(Task task) {
-    return getTaskCollection().doc(task.id).delete();
+  static Future<void> deleteTask(Task task, String uid) {
+    return getTaskCollection(uid).doc(task.id).delete();
   }
 
   static CollectionReference<MyUser> getUserCollection() {

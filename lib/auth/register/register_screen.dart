@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/auth/login/login_screen.dart';
 import 'package:todo/components/custom_textformfield.dart';
 import 'package:todo/dialog_utils.dart';
 import 'package:todo/firebase_utils.dart';
 import 'package:todo/home_screen.dart';
 import 'package:todo/models/my_user.dart';
+import 'package:todo/providers/auth_provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const String routeName = 'register';
@@ -141,13 +143,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
             id: credential.user?.uid,
             name: nameController.text);
         await FirebaseUtils.addUserToFirestore(myUser);
+        var authProvider = Provider.of<AuthProvider>(context, listen: false);
+        authProvider.updateUser(myUser);
         //todo:hide loading
         DialogUtils.hideLoading(context);
 
         //todo:show message
         DialogUtils.showMessage(context, 'Registered Successfully',
             title: 'Success', posActionName: 'Ok', posAction: () {
-          Navigator.pushNamed(context, HomeScreen.routeName);
+          Navigator.pushReplacementNamed(context, HomeScreen.routeName);
         });
 
         print('registered successfuly');

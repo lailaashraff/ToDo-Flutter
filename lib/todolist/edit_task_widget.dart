@@ -3,9 +3,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/my_theme.dart';
 
+import '../dialog_utils.dart';
 import '../firebase_utils.dart';
 import '../models/task.dart';
 import '../providers/app_config_provider.dart';
+import '../providers/auth_provider.dart';
 import '../providers/list_provider.dart';
 
 class EditTask extends StatefulWidget {
@@ -173,11 +175,19 @@ class _EditTaskState extends State<EditTask> {
           description: _desccontroller.text,
           dateTime: args.dateTime,
           id: args.id);
-      FirebaseUtils.updateTaskInFirestore(task)
-          .timeout(Duration(milliseconds: 500), onTimeout: () {
-        print('To do updated successfully');
-        listProvider.getTasksFromFireStore();
+      var authProvider = Provider.of<AuthProvider>(context, listen: false);
+      FirebaseUtils.updateTaskInFirestore(task, authProvider.currentUser!.id!)
+          .then((value) {
+        listProvider.getTasksFromFireStore(authProvider.currentUser!.id!);
+        DialogUtils.showMessage(context, 'To do updated successfully',
+            posActionName: 'ok', title: '', posAction: () {
+          Navigator.pop(context);
+        });
       });
+      //     .timeout(Duration(milliseconds: 500), onTimeout: () {
+      //   print('To do updated successfully');
+      //   listProvider.getTasksFromFireStore(authProvider.currentUser!.id!);
+      // });
       setState(() {});
     }
   }

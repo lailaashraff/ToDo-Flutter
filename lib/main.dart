@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:todo/home_screen.dart';
 import 'package:todo/my_theme.dart';
 import 'package:todo/providers/app_config_provider.dart';
+import 'package:todo/providers/auth_provider.dart';
 import 'package:todo/providers/list_provider.dart';
 import 'package:todo/todolist/edit_task_widget.dart';
 
@@ -28,6 +29,9 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider<ListProvider>(
           create: (_) => ListProvider(),
+        ),
+        ChangeNotifierProvider<AuthProvider>(
+          create: (_) => AuthProvider(),
         ),
       ],
       child: MyApp(),

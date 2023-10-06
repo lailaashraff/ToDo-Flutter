@@ -6,6 +6,8 @@ import 'package:todo/providers/app_config_provider.dart';
 import 'package:todo/providers/list_provider.dart';
 import 'package:todo/todolist/task_widget.dart';
 
+import '../providers/auth_provider.dart';
+
 class ToDoList extends StatefulWidget {
   @override
   State<ToDoList> createState() => _ToDoListState();
@@ -16,9 +18,10 @@ class _ToDoListState extends State<ToDoList> {
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);
     var listProvider = Provider.of<ListProvider>(context);
+    var authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     if (listProvider.taskList.isEmpty) {
-      listProvider.getTasksFromFireStore();
+      listProvider.getTasksFromFireStore(authProvider.currentUser!.id!);
     }
     return Column(
       children: [
@@ -31,7 +34,7 @@ class _ToDoListState extends State<ToDoList> {
             Duration(days: 365),
           ),
           onDateSelected: (date) {
-            listProvider.changeSelectDate(date);
+            listProvider.changeSelectDate(date, authProvider.currentUser!.id!);
           },
           leftMargin: 20,
           monthColor: provider.isDarkMode()
