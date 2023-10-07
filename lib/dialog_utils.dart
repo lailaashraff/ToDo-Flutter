@@ -8,6 +8,8 @@ class DialogUtils {
         context: context,
         builder: (context) {
           return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
             content: Row(
               children: [
                 CircularProgressIndicator(),

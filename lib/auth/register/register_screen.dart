@@ -7,7 +7,9 @@ import 'package:todo/dialog_utils.dart';
 import 'package:todo/firebase_utils.dart';
 import 'package:todo/home_screen.dart';
 import 'package:todo/models/my_user.dart';
+import 'package:todo/my_theme.dart';
 import 'package:todo/providers/auth_provider.dart';
+import 'package:todo/toast_utils.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const String routeName = 'register';
@@ -147,10 +149,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         DialogUtils.hideLoading(context);
 
         //todo:show message
-        DialogUtils.showMessage(context, 'Registered Successfully',
-            title: 'Success', posActionName: 'Ok', posAction: () {
-          Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
-        });
+        ToastUtils.showToast(
+            toastMessage: 'Registered Successfully.',
+            toastColor: MyTheme.primaryLight);
+        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+        // DialogUtils.showMessage(context, 'Registered Successfully',
+        //     title: 'Success', posActionName: 'Ok', posAction: () {
+        //   Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+        // });
 
         print('registered successfully');
         print(credential.user?.uid ?? '');

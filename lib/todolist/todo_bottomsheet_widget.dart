@@ -4,8 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:todo/dialog_utils.dart';
 import 'package:todo/firebase_utils.dart';
 import 'package:todo/models/task.dart';
+import 'package:todo/my_theme.dart';
 import 'package:todo/providers/app_config_provider.dart';
 import 'package:todo/providers/list_provider.dart';
+import 'package:todo/toast_utils.dart';
 
 import '../providers/auth_provider.dart';
 
@@ -63,6 +65,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   Padding(
                     padding: const EdgeInsets.all(12),
                     child: TextFormField(
+                      keyboardType: TextInputType.text,
                       onChanged: (text) {
                         description = text;
                       },
@@ -142,13 +145,12 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
         //todo: hide loading
         DialogUtils.hideLoading(context);
         listProvider.getTasksFromFireStore(authProvider.currentUser!.id!);
-        DialogUtils.showMessage(context, 'To do added successfully',
-            posActionName: 'ok');
         Navigator.pop(context);
-        Navigator.pop(context);
-      }).timeout(Duration(milliseconds: 500), onTimeout: () {
-        listProvider.getTasksFromFireStore(authProvider.currentUser!.id!);
-        Navigator.pop(context);
+        ToastUtils.showToast(
+            toastMessage: 'Task added successfully.',
+            toastColor: MyTheme.greenColor);
+        // DialogUtils.showMessage(context, 'To do added successfully',
+        //     posActionName: 'ok');
       });
     }
   }

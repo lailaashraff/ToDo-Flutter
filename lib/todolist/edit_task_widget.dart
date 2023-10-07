@@ -9,6 +9,7 @@ import '../models/task.dart';
 import '../providers/app_config_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/list_provider.dart';
+import '../toast_utils.dart';
 
 class EditTask extends StatefulWidget {
   static const String routeName = 'edit-task-screen';
@@ -94,6 +95,7 @@ class _EditTaskState extends State<EditTask> {
                     Padding(
                       padding: const EdgeInsets.all(12),
                       child: TextFormField(
+                        keyboardType: TextInputType.text,
                         controller: _desccontroller,
                         // onChanged: (text) {
                         //   description = text;
@@ -179,15 +181,12 @@ class _EditTaskState extends State<EditTask> {
       FirebaseUtils.updateTaskInFirestore(task, authProvider.currentUser!.id!)
           .then((value) {
         listProvider.getTasksFromFireStore(authProvider.currentUser!.id!);
-        DialogUtils.showMessage(context, 'To do updated successfully',
-            posActionName: 'ok', title: '', posAction: () {
-          Navigator.pop(context);
-        });
+        Navigator.pop(context);
+        ToastUtils.showToast(
+            toastMessage: 'Task edited successfully .',
+            toastColor: MyTheme.primaryLight);
       });
-      //     .timeout(Duration(milliseconds: 500), onTimeout: () {
-      //   print('To do updated successfully');
-      //   listProvider.getTasksFromFireStore(authProvider.currentUser!.id!);
-      // });
+
       setState(() {});
     }
   }

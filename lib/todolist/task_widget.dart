@@ -10,6 +10,7 @@ import 'package:todo/todolist/edit_task_widget.dart';
 
 import '../models/task.dart';
 import '../providers/auth_provider.dart';
+import '../toast_utils.dart';
 
 class TaskWidget extends StatefulWidget {
   Task task;
@@ -52,8 +53,9 @@ class _TaskWidgetState extends State<TaskWidget> {
                     .then((value) {
                   listProvider
                       .getTasksFromFireStore(authProvider.currentUser!.id!);
-                }).timeout(Duration(milliseconds: 500), onTimeout: () {
-                  print('todo deleted successfully');
+                  ToastUtils.showToast(
+                      toastMessage: 'Task deleted successfully.',
+                      toastColor: MyTheme.redColor);
                 });
                 setState(() {});
               },
@@ -117,10 +119,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                         onTapCompleteTask(widget.task).then((value) {
                           listProvider.getTasksFromFireStore(
                               authProvider.currentUser!.id!);
-                        }).timeout(Duration(milliseconds: 500), onTimeout: () {
-                          print('task completed !');
-                          listProvider.getTasksFromFireStore(
-                              authProvider.currentUser!.id!);
+                          //ToastUtils.showToast(toastMessage: 'Good job on completing your task !', toastColor: MyTheme.greenColor);
                         });
                         setState(() {});
                       },

@@ -7,7 +7,9 @@ import 'package:todo/firebase_utils.dart';
 
 import '../../dialog_utils.dart';
 import '../../home_screen.dart';
+import '../../my_theme.dart';
 import '../../providers/auth_provider.dart';
+import '../../toast_utils.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = 'login';
@@ -127,10 +129,14 @@ class _LoginScreenState extends State<LoginScreen> {
         DialogUtils.hideLoading(context);
 
         //todo:show message
-        DialogUtils.showMessage(context, 'Login Successfully',
-            title: 'Success', posActionName: 'Ok', posAction: () {
-              Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
-        });
+        ToastUtils.showToast(
+            toastMessage: 'Logged in Successfully.',
+            toastColor: MyTheme.primaryLight);
+        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+        // DialogUtils.showMessage(context, 'Login Successfully',
+        //     title: 'Success', posActionName: 'Ok', posAction: () {
+        //       Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+        // });
 
         print('login successfully');
         print(credential.user?.uid ?? '');
