@@ -29,15 +29,12 @@ class DialogUtils {
     Navigator.pop(context);
   }
 
-  static void showMessage(
-    BuildContext context,
-    String message, {
-    String title = 'Title',
-    String? posActionName,
-    VoidCallback? posAction,
-    String? negActionName,
-    VoidCallback? negAction,
-  }) {
+  static void showMessage(BuildContext context, String message,
+      {String title = 'Title',
+      String? posActionName,
+      VoidCallback? posAction,
+      String? negActionName,
+      VoidCallback? negAction}) {
     List<Widget> actions = [];
     if (posActionName != null) {
       actions.add(

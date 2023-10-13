@@ -1,13 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo/auth/login/login_screen_navigator.dart';
+import 'package:todo/auth/login/login_screen_view_model.dart';
 import 'package:todo/auth/register/register_screen.dart';
 import 'package:todo/components/custom_textformfield.dart';
-import 'package:todo/firebase_utils.dart';
 
 import '../../dialog_utils.dart';
 import '../../home_screen.dart';
-import '../../my_theme.dart';
 import '../../providers/auth_provider.dart';
 import '../../toast_utils.dart';
 
@@ -18,162 +17,141 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> implements LoginNavigator {
   TextEditingController emailController = TextEditingController();
 
   TextEditingController passwordController = TextEditingController();
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  LoginScreenViewModel viewModel = LoginScreenViewModel();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    viewModel.navigator = this;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(children: [
-        Image.asset(
-          'assets/images/signIn.png',
-          width: double.infinity,
-          fit: BoxFit.fill,
-        ),
-        Form(
-          key: formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.width * 0.7,
-                ),
-                CustomTextFormField(
-                    label: 'Email Address',
-                    keyBoardType: TextInputType.emailAddress,
-                    controller: emailController,
-                    validator: (text) {
-                      if (text == null || text.trim().isEmpty) {
-                        return 'Please enter an email';
-                      }
-                      bool emailValid = RegExp(
-                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                          .hasMatch(text);
-                      if (!emailValid) {
-                        return 'Please enter a valid email';
-                      }
-
-                      return null;
-                    }),
-                CustomTextFormField(
-                    label: 'Password',
-                    obscureText: true,
-                    controller: passwordController,
-                    validator: (text) {
-                      if (text == null || text.trim().isEmpty) {
-                        return 'Please enter a password';
-                      }
-                      if (text.length < 6) {
-                        return 'Please should be at least 6 characters';
-                      }
-                      return null;
-                    }),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      login();
-                    },
-                    style:
-                        ElevatedButton.styleFrom(padding: EdgeInsets.all(10)),
-                    child: Text('Login',
-                        style: Theme.of(context).textTheme.titleLarge),
+    viewModel.authProvider = Provider.of<AuthProvider>(context);
+    return ChangeNotifierProvider(
+      create: (context) => viewModel,
+      child: Scaffold(
+        body: Stack(children: [
+          Image.asset(
+            'assets/images/signIn.png',
+            width: double.infinity,
+            fit: BoxFit.fill,
+          ),
+          Form(
+            key: formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.7,
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Don't have an account?",
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    TextButton(
+                  CustomTextFormField(
+                      label: 'Email Address',
+                      keyBoardType: TextInputType.emailAddress,
+                      controller: emailController,
+                      validator: (text) {
+                        if (text == null || text.trim().isEmpty) {
+                          return 'Please enter an email';
+                        }
+                        bool emailValid = RegExp(
+                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(text);
+                        if (!emailValid) {
+                          return 'Please enter a valid email';
+                        }
+
+                        return null;
+                      }),
+                  CustomTextFormField(
+                      label: 'Password',
+                      obscureText: true,
+                      controller: passwordController,
+                      validator: (text) {
+                        if (text == null || text.trim().isEmpty) {
+                          return 'Please enter a password';
+                        }
+                        if (text.length < 6) {
+                          return 'Please should be at least 6 characters';
+                        }
+                        return null;
+                      }),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context)
-                            .pushReplacementNamed(RegisterScreen.routeName);
+                        login();
                       },
-                      child: Text('Sign Up',
-                          style: Theme.of(context).textTheme.displayMedium),
-                    )
-                  ],
-                )
-              ],
+                      style:
+                          ElevatedButton.styleFrom(padding: EdgeInsets.all(10)),
+                      child: Text('Login',
+                          style: Theme.of(context).textTheme.titleLarge),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have an account?",
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushReplacementNamed(RegisterScreen.routeName);
+                        },
+                        child: Text('Sign Up',
+                            style: Theme.of(context).textTheme.displayMedium),
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 
   void login() async {
     if (formKey.currentState!.validate() == true) {
-      DialogUtils.showLoading(context, 'Loading...');
-
-      try {
-        final credential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(
-                email: emailController.text, password: passwordController.text);
-        //todo:hide loading
-        var user = await FirebaseUtils.readUserData(credential.user?.uid ?? '');
-        //user authenticated but not found in firebase
-        if (user == null) {
-          return;
-        }
-        var authProvider = Provider.of<AuthProvider>(context, listen: false);
-        authProvider.updateUser(user);
-        DialogUtils.hideLoading(context);
-
-        //todo:show message
-        ToastUtils.showToast(
-            toastMessage: 'Logged in Successfully.',
-            toastColor: MyTheme.primaryLight);
-        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
-        // DialogUtils.showMessage(context, 'Login Successfully',
-        //     title: 'Success', posActionName: 'Ok', posAction: () {
-        //       Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
-        // });
-
-        print('login successfully');
-        print(credential.user?.uid ?? '');
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'user-not-found') {
-          DialogUtils.hideLoading(context);
-          DialogUtils.showMessage(
-            context,
-            'No user found for that email.',
-            title: 'Error',
-            posActionName: 'Ok',
-          );
-
-          print('error firebaseAuth user: ${e.toString()}');
-          print('No user found for that email.');
-        } else if (e.code == 'wrong-password') {
-          DialogUtils.hideLoading(context);
-          DialogUtils.showMessage(
-            context,
-            'Wrong password provided for that user.',
-            title: 'Error',
-            posActionName: 'Ok',
-          );
-          print('error firebaseAuth pass: ${e.toString()}');
-          print('Wrong password provided for that user.');
-        }
-      } catch (e) {
-        DialogUtils.hideLoading(context);
-        DialogUtils.showMessage(
-          context,
-          '${e.toString()}',
-          title: 'Error',
-          posActionName: 'Ok',
-        );
-        print('in second catch');
-        print(e.toString());
-      }
+      viewModel.login(emailController.text, passwordController.text);
     }
+  }
+
+  @override
+  void hideMyLoading() {
+    DialogUtils.hideLoading(context);
+  }
+
+  @override
+  void showMyLoading() {
+    DialogUtils.showLoading(context, 'Loading...');
+  }
+
+  @override
+  void showMyMessage(String message, String title) {
+    DialogUtils.showMessage(context, message,
+        title: title, posActionName: 'ok');
+  }
+
+  @override
+  void showMyToast(String message, Color color) {
+    // TODO: implement showMyToast
+    ToastUtils.showToast(toastMessage: message, toastColor: color);
+  }
+
+  @override
+  void toastAction() {
+    // TODO: implement toastAction
+    Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
   }
 }
